@@ -4,15 +4,15 @@
  *
  * Source: https://github.com/WroDo/CollectivesCallouts
  *
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: GPL V3
  * License-Filename: LICENSE
  */
 
 /**
  * @author  Heiko Kretschmer
  * @link    https://github.com/WroDo/CollectivesCallouts
- * @license http://opensource.org/licenses/MIT The MIT License
- * @version 0.1
+ * @license https://www.gnu.org/licenses/gpl-3.0.txt
+ * @version 0.2
  */
 class CollectivesCallouts extends AbstractPicoPlugin
 {
@@ -138,5 +138,3 @@ private function processNextCallout(&$aStart, &$aContent, $aCalloutFlavour) #TOD
     } // end onContentParsed
 
 } // end class
-
-
