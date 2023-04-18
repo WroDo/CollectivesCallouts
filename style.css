@@ -1,0 +1,68 @@
+/* More symbols: https://www.compart.com/en/unicode/block/U+2600 */
+
+.callout_info
+{
+        border          : 1px solid #cdd;
+        color                   : black;
+    background-color: lightgray;
+    margin          : 0;
+    padding         : 5px;
+}
+
+.callout_info::before
+{
+    content             : "🚀";
+        font-size       : 200%;
+    margin      : 10px;
+} /**/
+
+.callout_success
+{
+        border          : 1px solid #cdd;
+        color                   : darkgreen;
+    background-color: lightgreen;
+    margin          : 0;
+    padding         : 5px;
+}
+
+.callout_success::before
+{
+    content             : "☺";
+        font-size       : 200%;
+/*   font-weight : bold; */
+    margin      : 10px;
+} /**/
+
+.callout_warn
+{
+        border          : 1px solid #cdd;
+        color                   : darkred;
+    background-color: yellow;
+    margin          : 0;
+    padding         : 5px;
+}
+
+.callout_warn::before
+{
+    content             : "⚠";
+        font-size       : 200%;
+/*    font-weight : bold; */
+    margin      : 10px;
+} /**/
+
+.callout_error
+{
+        border          : 1px solid #cdd;
+        color                   : darkred;
+    background-color: red;
+    margin          : 0;
+    padding         : 5px;
+}
+
+.callout_error::before
+{
+    content             : "☠";
+        font-size       : 200%;
+/*    font-weight : bold; */
+    margin      : 10px;
+} /**/
