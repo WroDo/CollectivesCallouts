@@ -1,4 +1,3 @@
-deep-thought CollectivesCallouts # cat CollectivesCallouts.php 
 <?php
 /**
  * This marks Nextcloud Collectives Callouts for later styling with CSS
@@ -139,5 +138,5 @@ private function processNextCallout(&$aStart, &$aContent, $aCalloutFlavour) #TOD
     } // end onContentParsed
 
 } // end class
-deep-thought CollectivesCallouts # 
+
 
