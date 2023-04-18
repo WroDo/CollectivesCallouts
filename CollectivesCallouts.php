@@ -1,3 +1,4 @@
+deep-thought CollectivesCallouts # cat CollectivesCallouts.php 
 <?php
 /**
  * This marks Nextcloud Collectives Callouts for later styling with CSS
@@ -22,46 +23,74 @@ class CollectivesCallouts extends AbstractPicoPlugin
      * @var int
      */
     const API_VERSION = 3;
+        private $gCalloutMark="CALLOUT_MARK"; 
     //private $gFileLog="plugins/CollectivesCallouts/.CollectivesCallouts.log";
 
 
-        private function processNextCallout(&$aStart, &$aContent) #TODO: Refactor using regex
-        {
+   /**
+     * Triggered after Pico has prepared the raw file contents for parsing
+     *
+     * @see DummyPlugin::onContentParsing()
+     * @see Pico::parseFileContent()
+     * @see DummyPlugin::onContentParsed()
+     *
+     * @param string &$markdown Markdown contents of the requested page
+     */
+    public function onContentPrepared(&$markdown)
+    {
+           if (isset($this->gFileLog)) file_put_contents($this->gFileLog, $markdown, FILE_APPEND | LOCK_EX);
+
+                        $markdown=preg_replace('/[\n\r]:::/', $this->gCalloutMark, $markdown);
+
+           if (isset($this->gFileLog)) file_put_contents($this->gFileLog, $markdown, FILE_APPEND | LOCK_EX);
+    }
+
+
+private function processNextCallout(&$aStart, &$aContent, $aCalloutFlavour) #TODO: Refactor using regex, make it caseinsensitve and what not
+{
         $lReturnValue;
 
         /* find next */
-        $lBeginTagPosStart=strpos($aContent, "<p>:: ", $aStart);
+        $lBeginTagPosStart=strpos($aContent, $this->gCalloutMark . " " .  $aCalloutFlavour, $aStart);
 
         /* Check if we found something */
         if ($lBeginTagPosStart!==false)
         {
-                /* read ahead to end of begin-tag */
-                $lBeginTagPosEnd=strpos($aContent, PHP_EOL, $lBeginTagPosStart+strlen("<p>:: "));
+                /* find the beginning of the enclosing HTML-tag to the left */
+                #$lBeginHTMLTagPosStart=strpos($aContent, "<", -(strlen($aContent)-$lBeginTagPosStart+strlen(":: $aCalloutFlavour")));
 
-                /* Extract Callout Begin-Tag */
-                $lTagBegin=substr($aContent, $lBeginTagPosStart, $lBeginTagPosEnd-$lBeginTagPosStart); // f.e. <p>:: info
-
-                /* Extract Callout Begin-Tag flavour */
-                $lTagBeginFlavour=substr($lTagBegin, strlen("<p>:: "), strlen($lTagBegin)-strlen("<p>:: ")); // f.e. <p>:: info
+                /* Extract Callout Begin-Tag, including HTML */
+                #$lTagBegin=substr($aContent, $lBeginHTMLTagPosStart, $lBeginTagPosStart+strlen(":: $aCalloutFlavour")-$lBeginHTMLTagPosStart); // f.e. <p>:: info
 
                 /* Find the begin of end-tag */
-                $lEndTagPosStart=strpos($aContent, "<p>::</p>", $lBeginTagPosEnd);
+                $lEndTagPosStart=strpos($aContent, $this->gCalloutMark, $lBeginTagPosStart+strlen($this->gCalloutMark . " " . $aCalloutFlavour));
 
                 /* Find the end of end-tag */
-                $lEndTagPosEnd=$lEndTagPosStart+strlen("<p>::</p>");
+                #$lEndHTMLTagPosEnd=strpos($aContent, ">", $lEndHTMLTagPosStart+strlen(">::</"))+1; 
+                $lEndTagPosEnd=$lEndTagPosStart+strlen($this->gCalloutMark); 
 
-                /* Extract Callout End-Tag */
-                $lTagEnd=substr($aContent, $lEndTagPosStart, $lEndTagPosEnd-$lEndTagPosStart); 
+                /* Extract complete Callout */
+                $lTagContent=substr($aContent, $lBeginTagPosStart, $lEndTagPosEnd-$lBeginTagPosStart); 
+                        if (isset($this->gFileLog)) file_put_contents($this->gFileLog, "lTagContent: $lTagContent", FILE_APPEND | LOCK_EX);
 
-                /* Extract Content between Callout Begin- and End-Tag */
-                $lTagContent=substr($aContent, $lBeginTagPosEnd, $lEndTagPosStart-$lBeginTagPosEnd); 
+                /* Remove Marks (beginning) */
+                $lTagContentClean=substr($lTagContent, strlen($this->gCalloutMark . " " .  $aCalloutFlavour)); 
+                        if (isset($this->gFileLog)) file_put_contents($this->gFileLog, "lTagContentClean: $lTagContentClean", FILE_APPEND | LOCK_EX);
 
-                /* Clean-up Content between Callout Begin- and End-Tag */
-                $lTagContentClean=nl2br(ltrim(rtrim(strip_tags($lTagContent)))); 
+                /* Remove Marks (end) */
+                $lTagContentClean=substr($lTagContentClean, 0, -strlen($this->gCalloutMark)); 
+                        if (isset($this->gFileLog)) file_put_contents($this->gFileLog, "lTagContentClean: $lTagContentClean", FILE_APPEND | LOCK_EX);
+
+                /* Strip HTML-tags, remove whitespaces */
+                $lTagContentClean=trim(strip_tags($lTagContentClean)); 
+
+                /* Add HTML-Linebreaks */
+                $lTagContentClean=nl2br($lTagContentClean); 
 
                 /* Create new Callout Tag in HTML */
-                $lNewTagString="<p class=\"callout_$lTagBeginFlavour\">";
+                $lNewTagString="<p class=\"callout_$aCalloutFlavour\">";
                 $lNewTagString=$lNewTagString . $lTagContentClean . "</p>";
+                        if (isset($this->gFileLog)) file_put_contents($this->gFileLog, "lNewTagString: $lNewTagString", FILE_APPEND | LOCK_EX);
 
                 /* Replace Strings */
                 $aContent=substr_replace($aContent, $lNewTagString, $lBeginTagPosStart, $lEndTagPosEnd-$lBeginTagPosStart);
@@ -77,7 +106,8 @@ class CollectivesCallouts extends AbstractPicoPlugin
         }
 
         return($lReturnValue);
-        } // end processNextCallout
+} // end processNextCallout
+
 
 
     /**
@@ -91,53 +121,23 @@ class CollectivesCallouts extends AbstractPicoPlugin
      */
     public function onContentParsed(&$content)
     {
-                $lPico = $this->getPico();
+        if (isset($this->gFileLog)) file_put_contents($this->gFileLog, $content, FILE_APPEND | LOCK_EX);
 
-                if (23==23) // deb
+            $lCalloutFlavours=array("info", "success", "warn", "error");
+        foreach ($lCalloutFlavours as $lCalloutFlavour)
+        {
+                $lLastStart=0;
+                while ($this->processNextCallout($lLastStart, $content, $lCalloutFlavour))
                 {
-                        $lLastStart=0;
-                        file_put_contents($this->gFileLog, $content, FILE_APPEND | LOCK_EX);
+                        #echo("lLastStart: $lLastStart\n");
+                                        #exit (1); // deb
+                }// end while
+        } // end foreach
 
-                        while ($this->processNextCallout($lLastStart, $content))
-                        {
-                                echo("lLastStart: $lLastStart\n");
-                        }// end while
-                }
+        if (isset($this->gFileLog)) file_put_contents($this->gFileLog, $content, FILE_APPEND | LOCK_EX);
 
-                if (23==42) // deb
-                if ($lPico)
-                {
-                        file_put_contents($this->gFileLog, $content, FILE_APPEND | LOCK_EX);
-// This is how the Callout looks like in HTML:
-//<dt>::: info</dt>
-//<dt>I don't see the difference. Why does Pico CMS not show the images?</dt>
-//<dd>
-//<p>::</p>
-                        $lLinesArray = explode(PHP_EOL, $content); /* we assume it keeps formatted nicely in lines */
-                        foreach ($lLinesArray as &$aLine)
-                        {
-                                switch($aLine)
-                                {
-                                        case "<p>:: info":                              $aLine="<p class=\"callout_info\">";
-                                                                                                        break;
-
-                                        case "<p>:: success":                   $aLine="<p class=\"callout_success\">";
-                                                                                                        break;
-
-                                        case "<p>:: warn":                              $aLine="<p class=\"callout_warn\">";
-                                                                                                        break;
-
-                                        case "<p>:: error":                             $aLine="<p class=\"callout_error\">";
-                                                                                                        break;
-
-                                        case "<p>::</p>":                               $aLine="";
-                                                                                                        break;
-
-                                        case "<dd>::</dd>":                             $aLine="";
-                                                                                                        break;
-                                }
-                        } // for each line
-                    $content=implode("\r", $lLinesArray);
-                } // if pico 
     } // end onContentParsed
-}
+
+} // end class
+deep-thought CollectivesCallouts # 
+
