@@ -10,7 +10,7 @@ A Pico CMS-Plugin that allows styling of Nextcloud Collectives Callouts
 ```
 
 ## More
-More ideas about using Nextcloud Collectives as backend for Pico CMS can be found here: TBD
+More ideas about using Nextcloud Collectives as backend for Pico CMS can be found here: https://www.wurst-wasser.net/pico
 
 # Example
 ## How it looks in Nextcloud Collective
