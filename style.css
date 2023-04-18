@@ -11,7 +11,8 @@
 
 .callout_info::before
 {
-    content             : "🚀";
+    /*content           : "🚀"; */
+    content             : "📘";
         font-size       : 200%;
     margin      : 10px;
 } /**/
@@ -27,7 +28,9 @@
 
 .callout_success::before
 {
-    content             : "☺";
+    /* content          : "☺"; */
+    /* content          : "👍"; */
+    content             : "✅";
         font-size       : 200%;
 /*   font-weight : bold; */
     margin      : 10px;
@@ -44,7 +47,8 @@
 
 .callout_warn::before
 {
-    content             : "⚠";
+    /* content          : "⚠"; */
+    content             : "🚧";
         font-size       : 200%;
 /*    font-weight : bold; */
     margin      : 10px;
@@ -61,7 +65,9 @@
 
 .callout_error::before
 {
-    content             : "☠";
+    /* content          : "☠"; */
+    /* content          : "❗"; */
+    content             : "🛑";
         font-size       : 200%;
 /*    font-weight : bold; */
     margin      : 10px;
