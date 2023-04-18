@@ -1,0 +1,38 @@
+{
+    "name": "wrodo/pico-collectives-callouts-plugin",
+    "description": "A Callouts plugin for Pico CMS.",
+    "type": "pico-plugin",
+    "keywords": [ "pico", "picocms", "picocms-plugin", "pico-collectives-callouts-plugin", "wrodo" ],
+    "homepage": "https://github.com/WroDo/CollectivesCallouts",
+    "license": "GPL V3",
+    "authors": [
+        {
+            "name": "Heiko Kretschmer",
+            "email": "usenet@cocoa-co.de",
+            "role": "Head Of Bullshit Bingo"
+        },
+        {
+            "name": "Contributors",
+            "homepage": "https://github.com/WroDo/CollectivesCallouts/graphs/contributors"
+        }
+    ],
+    "support": {
+        "docs": "https://github.com/WroDo/CollectivesCallouts/blob/main/README.md",
+        "issues": "https://github.com/WroDo/CollectivesCallouts/issues",
+        "source": "https://github.com/WroDo/CollectivesCallouts"
+    },
+    "require": {
+        "php": ">=7.0"
+    },
+    "require-dev": {
+        "picocms/pico": "^2.1"
+    },
+    "autoload": {
+        "classmap": [ "CollectivesCallouts.php", "style.css" ]
+    },
+    "extra": {
+        "installer-name": "CollectivesCallouts"
+    },
+    "minimum-stability": "beta",
+    "prefer-stable": true
+}
